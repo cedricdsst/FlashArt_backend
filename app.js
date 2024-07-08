@@ -3,13 +3,21 @@ const cors = require('cors');
 const mongoose = require('mongoose');
 const cookieParser = require('cookie-parser');
 const path = require('path');
+require('dotenv').config();
 
 const app = express();
 app.use(cookieParser());
 app.use(express.json());
 
+
+const dbHost = process.env.DB_HOST;
+const dbUser = process.env.DB_USER;
+const dbPass = process.env.DB_PASS;
+
+
+
 // Connexion à MongoDB
-mongoose.connect('mongodb+srv://cedricdsst:C9STiOiaJQYv8j3I@cluster0.7oiduv6.mongodb.net/hackathonOlivier?retryWrites=true&w=majority&appName=Cluster0',
+mongoose.connect(`mongodb+srv://${dbUser}:${dbPass}@${dbHost}/hackathonOlivier?retryWrites=true&w=majority&appName=Cluster0`,
     {
         useNewUrlParser: true,
         useUnifiedTopology: true
