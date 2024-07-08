@@ -1,0 +1,74 @@
+
+Flash Management API Documentation
+
+Routes:
+
+1. Créer un Flash
+   URL: localhost:3000/api/flash/new
+   Méthode: POST
+   Description: Crée un nouveau flash associé à un utilisateur.
+   Exemple de Body:
+   {
+     "tags": [
+       {
+         "id": "ObjectId",
+         "name": "string"
+       }
+     ]
+   }
+   Upload d'image:
+   - Nom du champ: file
+   - Types de fichiers acceptés: jpg, jpeg, png, gif
+
+2. Mettre à Jour un Flash
+   URL: localhost:3000/api/flash/update
+   Méthode: PATCH
+   Description: Met à jour partiellement un flash existant. L'utilisateur doit être l'auteur du flash.
+   Exemple de Body:
+   {
+     "flashId": "ObjectId",
+     "image": "string", // Chemin de l'image si elle n'est pas modifiée
+     "tags": [
+       {
+         "id": "ObjectId",
+         "name": "string"
+       }
+     ],
+     "available": true
+   }
+   Upload d'image:
+   - Nom du champ: file
+   - Types de fichiers acceptés: jpg, jpeg, png, gif
+
+3. Supprimer un Flash
+   URL: localhost:3000/api/flash/delete
+   Méthode: DELETE
+   Description: Supprime un flash existant. L'utilisateur doit être l'auteur du flash.
+   Exemple de Body:
+   {
+     "flashId": "ObjectId"
+   }
+
+4. Récupérer Tous les Flashes
+   URL: localhost:3000/api/flash/get
+   Méthode: GET
+   Description: Récupère tous les flashes avec un filtrage optionnel par tags.
+   Query Params (optionnels):
+   - tags: Une chaîne de tags séparés par des virgules pour filtrer les flashes. Exemple: ?tags=tag1,tag2
+
+5. Récupérer un Flash par ID
+   URL: localhost:3000/api/flash/getById
+   Méthode: POST
+   Description: Récupère un flash par son ID.
+   Exemple de Body:
+   {
+     "flashId": "ObjectId"
+   }
+
+Middleware d'Authentification:
+Toutes les routes protégées par le middleware d'authentification doivent inclure un cookie auth_token contenant un token JWT valide. Le middleware extrait l'ID de l'utilisateur du token et le place dans req.auth.userId.
+
+Middleware Multer:
+Pour gérer le téléchargement d'images, nous utilisons Multer. Le champ de fichier dans le formulaire doit être nommé file.
+
+
