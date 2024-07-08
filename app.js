@@ -17,7 +17,7 @@ const dbPass = process.env.DB_PASS;
 
 
 // Connexion à MongoDB
-mongoose.connect(`mongodb+srv://${dbUser}:${dbPass}@${dbHost}/hackathonOlivier?retryWrites=true&w=majority&appName=Cluster0`,
+mongoose.connect(`mongodb+srv://${dbUser}:${dbPass}@${dbHost}/flashArt?retryWrites=true&w=majority&appName=Cluster0`,
     {
         useNewUrlParser: true,
         useUnifiedTopology: true
@@ -43,6 +43,7 @@ const userRoutes = require('./routes/user');
 const vinRoutes = require('./routes/vin');
 const ecoleRoutes = require('./routes/ecole');
 const atelierRoutes = require('./routes/atelier');
+const flashRoutes = require('./routes/flash');
 
 app.use('/api/topic', topicRoutes);
 app.use('/api/chat', chatRoutes);
@@ -51,5 +52,6 @@ app.use('/api/user', userRoutes);
 app.use('/api/vin', vinRoutes);
 app.use('/api/ecole', ecoleRoutes);
 app.use('/api/atelier', atelierRoutes);
+app.use('/api/flash', flashRoutes);
 
 module.exports = app;

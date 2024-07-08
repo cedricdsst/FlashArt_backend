@@ -1,35 +1,36 @@
 const User = require('../models/User');
+const Rdv = require('../models/Rdv');
 
-exports.getOneUser = (req, res, next) => {
-    User.findOne({
-        username: req.params.username
-    }, 'username email followers following')
-        .then((user) => {
-            if (!user) {
-                return res.status(404).json({
-                    message: "User not found"
-                });
-            }
+exports.getOneUser = async (req, res, next) => {
+    try {
+        const user = await User.findOne({ username: req.params.username })
+            .populate({
+                path: 'rdv_ids',
+                populate: {
+                    path: 'client_id artist_id',
+                    select: 'name' // Adjust as per your Ecole model
+                }
+            })
+            .exec();
 
-            // Get count of followers and following
-            const followersCount = user.followers.length;
-            const followingCount = user.following.length;
+        if (!user) {
+            return res.status(404).json({ message: "User not found" });
+        }
 
-            // Construct response object with required fields and counts
-            const response = {
-                username: user.username,
-                email: user.email,
-                followers: followersCount,
-                following: followingCount
-            };
+        const response = {
+            username: user.username,
+            email: user.email,
+            lastname: user.lastname,
+            firstname: user.firstname,
+            role: user.role,
+            flash: user.flash,
+            rdvs: user.rdv_ids
+        };
 
-            res.status(200).json(response);
-        })
-        .catch((error) => {
-            res.status(500).json({
-                error: error.message
-            });
-        });
+        res.status(200).json(response);
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
 };
 
 
