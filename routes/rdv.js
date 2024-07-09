@@ -6,7 +6,7 @@ const auth = require('../middleware/auth'); // Assuming you have an auth middlew
 router.post('/', auth, rdvController.createRdv);
 router.get('/:id', auth, rdvController.getRdvById);
 router.get('/', auth, rdvController.getAllRdvs);
-router.put('/:id', auth, rdvController.updateRdvById);
+router.patch('/:id', auth, rdvController.updateRdvById);
 router.delete('/:id', auth, rdvController.deleteRdvById);
 
 module.exports = router;

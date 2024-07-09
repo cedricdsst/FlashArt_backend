@@ -42,7 +42,9 @@ exports.login = (req, res, next) => {
                         return res.status(401).json({ message: 'Incorrect username/password' });
                     } else {
                         const token = jwt.sign(
-                            { userId: user._id },
+                            { userId: user._id,
+                              role:  user.role 
+                             },
                             'RANDOM_TOKEN_SECRET',
                             { expiresIn: '24h' } // Adjust as needed
                         );
