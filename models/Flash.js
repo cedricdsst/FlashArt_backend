@@ -9,6 +9,7 @@ const tagSchema = mongoose.Schema({
 // Define the Flash Schema
 const flashSchema = mongoose.Schema({
     image: { type: String, required: true },
+    price: { type: Number, required: true },
     tags: [tagSchema],
     available: { type: Boolean, required: true, default: true },
     user_id: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true } // Reference to the User

@@ -44,6 +44,7 @@ const vinRoutes = require('./routes/vin');
 const ecoleRoutes = require('./routes/ecole');
 const atelierRoutes = require('./routes/atelier');
 const flashRoutes = require('./routes/flash');
+const rdvRoutes = require('./routes/rdv');
 
 app.use('/api/topic', topicRoutes);
 app.use('/api/chat', chatRoutes);
@@ -53,5 +54,6 @@ app.use('/api/vin', vinRoutes);
 app.use('/api/ecole', ecoleRoutes);
 app.use('/api/atelier', atelierRoutes);
 app.use('/api/flash', flashRoutes);
+app.use('/api/rdv', rdvRoutes);
 
 module.exports = app;

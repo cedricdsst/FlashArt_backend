@@ -17,6 +17,7 @@ exports.createFlash = async (req, res) => {
         user.flash = {
             id: flash._id,
             image: flash.image,
+            price: flash.price,
             tags: flash.tags,
             available: flash.available // This will be true by default as per the schema
         };
@@ -28,13 +29,12 @@ exports.createFlash = async (req, res) => {
     }
 };
 
-
 // Partially update an existing flash
 exports.updateFlash = async (req, res) => {
     try {
         const user_id = req.auth.userId;
+        const flashId = req.params.flashId;
         const flashObject = JSON.parse(req.body.flash);
-        const { flashId } = flashObject;
 
         const updateData = flashObject;
         if (req.file) {
@@ -73,12 +73,11 @@ exports.updateFlash = async (req, res) => {
     }
 };
 
-
 // Delete a flash
 exports.deleteFlash = async (req, res) => {
     try {
         const user_id = req.auth.userId;
-        const { flashId } = req.body;
+        const flashId = req.params.flashId;
 
         // Find the flash and check if the user is authorized
         const flash = await Flash.findById(flashId);
@@ -126,7 +125,7 @@ exports.getAllFlashes = async (req, res) => {
 // Get a single flash by ID
 exports.getFlashById = async (req, res) => {
     try {
-        const { flashId } = req.body;
+        const flashId = req.params.flashId;
 
         const flash = await Flash.findById(flashId);
 
