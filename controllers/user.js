@@ -1,6 +1,8 @@
+const mongoose = require('mongoose');
 const User = require('../models/User');
 const Rdv = require('../models/Rdv');
 
+// Get one user by username
 exports.getOneUser = async (req, res, next) => {
     try {
         const user = await User.findOne({ username: req.params.username })
@@ -8,7 +10,7 @@ exports.getOneUser = async (req, res, next) => {
                 path: 'rdv_ids',
                 populate: {
                     path: 'client_id artist_id',
-                    select: 'name' // Adjust as per your Ecole model
+                    select: 'name' // Adjust as per your User model
                 }
             })
             .exec();
@@ -33,89 +35,56 @@ exports.getOneUser = async (req, res, next) => {
     }
 };
 
-
-exports.getFollowers = async (req, res) => {
-    const username = req.query.username;
+// Get all users
+exports.getAllUsers = async (req, res) => {
     try {
-        const user = await User.findOne({ username }).populate('followers');
+        const users = await User.find()
+            .populate({
+                path: 'rdv_ids',
+                populate: {
+                    path: 'client_id artist_id',
+                    select: 'name' // Adjust as per your User model
+                }
+            })
+            .exec();
+
+        res.status(200).json(users);
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
+};
+
+// Update a user by ID
+exports.updateUserById = async (req, res) => {
+    try {
+        const updateData = req.body;
+
+        const user = await User.findByIdAndUpdate(req.params.id, updateData, { new: true });
+
         if (!user) {
-            return res.status(404).send({ message: 'User not found.' });
+            return res.status(404).json({ message: 'User not found' });
         }
-        res.status(200).json(user.followers);
+
+        res.status(200).json({ message: 'User updated successfully', user });
     } catch (error) {
-        res.status(500).send({ message: error.message });
+        res.status(500).json({ error: error.message });
     }
 };
 
-// Obtenir tous les utilisateurs suivis par un utilisateur par son username
-exports.getFollowings = async (req, res) => {
-    const username = req.query.username;
+// Delete a user by ID
+exports.deleteUserById = async (req, res) => {
     try {
-        const user = await User.findOne({ username }).populate('following');
+        const user = await User.findByIdAndDelete(req.params.id);
+
         if (!user) {
-            return res.status(404).send({ message: 'User not found.' });
+            return res.status(404).json({ message: 'User not found' });
         }
-        res.status(200).json(user.following);
+
+        // Optionally, you can remove the RDVs associated with the user
+        await Rdv.deleteMany({ artist_id: user._id });
+
+        res.status(200).json({ message: 'User deleted successfully' });
     } catch (error) {
-        res.status(500).send({ message: error.message });
-    }
-};
-
-// Suivre un nouvel utilisateur
-exports.followUser = async (req, res) => {
-    const usernameToFollow = req.body.username;
-    const userId = req.auth.userId;
-
-    try {
-        const userToFollow = await User.findOne({ username: usernameToFollow });
-        const currentUser = await User.findById(userId);
-
-        if (!userToFollow) {
-            return res.status(404).send({ message: 'User not found.' });
-        }
-
-        // Vérifier si l'utilisateur suit déjà l'utilisateur cible
-        if (currentUser.following.includes(userToFollow._id)) {
-            return res.status(400).send({ message: 'You are already following this user.' });
-        }
-
-        // Ajouter l'utilisateur cible à la liste des followings de l'utilisateur actuel
-        currentUser.following.push(userToFollow._id);
-        await currentUser.save();
-
-        // Optionnel : Ajouter l'utilisateur actuel à la liste des followers de l'utilisateur cible
-        userToFollow.followers.push(currentUser._id);
-        await userToFollow.save();
-
-        res.status(200).send({ message: 'User followed successfully.' });
-    } catch (error) {
-        res.status(500).send({ message: error.message });
-    }
-};
-
-// Ne plus suivre un utilisateur
-exports.unfollowUser = async (req, res) => {
-    const usernameToUnfollow = req.body.username;
-    const userId = req.auth.userId;
-
-    try {
-        const userToUnfollow = await User.findOne({ username: usernameToUnfollow });
-        const currentUser = await User.findById(userId);
-
-        if (!userToUnfollow) {
-            return res.status(404).send({ message: 'User not found.' });
-        }
-
-        // Retirer l'utilisateur de la liste des followings de l'utilisateur actuel
-        currentUser.following = currentUser.following.filter(followingId => !followingId.equals(userToUnfollow._id));
-        await currentUser.save();
-
-        // Optionnel : Retirer l'utilisateur actuel de la liste des followers de l'utilisateur cible
-        userToUnfollow.followers = userToUnfollow.followers.filter(followerId => !followerId.equals(currentUser._id));
-        await userToUnfollow.save();
-
-        res.status(200).send({ message: 'User unfollowed successfully.' });
-    } catch (error) {
-        res.status(500).send({ message: error.message });
+        res.status(500).json({ error: error.message });
     }
 };

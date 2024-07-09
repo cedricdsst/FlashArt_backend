@@ -1,12 +1,18 @@
 const express = require('express');
 const router = express.Router();
-const userController = require('../controllers/user'); // Assurez-vous que le chemin est correct
 const auth = require('../middleware/auth');
+const userController = require('../controllers/user');
 
-router.get('/profile/:username', userController.getOneUser);
-router.get('/followers', userController.getFollowers);
-router.get('/followings', userController.getFollowings);
-router.post('/follow', auth, userController.followUser);
-router.post('/unfollow', auth, userController.unfollowUser);
+// Get one user by username
+router.get('/:username', auth, userController.getOneUser);
+
+// Get all users
+router.get('/', auth, userController.getAllUsers);
+
+// Update a user by ID
+router.patch('/:id', auth, userController.updateUserById);
+
+// Delete a user by ID
+router.delete('/:id', auth, userController.deleteUserById);
 
 module.exports = router;
