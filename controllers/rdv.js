@@ -137,18 +137,37 @@ exports.updateRdvById = async (req, res) => {
 
 
 // Delete an RDV by ID
+// Delete an RDV by ID
 exports.deleteRdvById = async (req, res) => {
     try {
-        const rdv = await Rdv.findByIdAndDelete(req.params.id);
+        const userId = req.auth.userId; // Get user ID from authenticated user
+        const rdv = await Rdv.findById(req.params.id);
 
         if (!rdv) {
             return res.status(404).json({ message: 'RDV not found' });
         }
 
-        // Remove the RDV ID from the user's rdv_ids array
+        // Check if the user is the artist who created the RDV
+        if (rdv.artist_id.toString() !== userId) {
+            return res.status(403).json({ message: 'Unauthorized action' });
+        }
+
+        // Delete the RDV
+        await Rdv.findByIdAndDelete(req.params.id);
+
+        // Remove the RDV ID from the artist's rdv_ids array
         const user = await User.findById(rdv.artist_id);
         user.rdv_ids = user.rdv_ids.filter(rdvId => !rdvId.equals(rdv._id));
         await user.save();
+
+        // Optionally, remove the RDV ID from the client's rdv_ids array if client_id is present
+        if (rdv.client_id) {
+            const client = await User.findById(rdv.client_id);
+            if (client) {
+                client.rdv_ids = client.rdv_ids.filter(rdvId => !rdvId.equals(rdv._id));
+                await client.save();
+            }
+        }
 
         res.status(200).json({ message: 'RDV deleted successfully' });
     } catch (error) {
