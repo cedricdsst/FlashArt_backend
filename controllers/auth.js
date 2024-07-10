@@ -65,6 +65,14 @@ exports.login = (req, res, next) => {
 
                         res.status(200).json({
                             message: "User successfully logged in!",
+                            data: {
+                                userId: user._id,
+                                username: user.username,
+                                email: user.email,
+                                lastname: user.lastname,
+                                firstname: user.firstname,
+                                role: user.role
+                            }
                         });
                     }
                 })
