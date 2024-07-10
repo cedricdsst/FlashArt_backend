@@ -27,7 +27,7 @@ mongoose.connect(`mongodb+srv://${dbUser}:${dbPass}@${dbHost}/flashArt?retryWrit
 
 // Configuration CORS
 const corsOptions = {
-    origin: 'http://localhost:5173', // Remplacez par l'origine de votre frontend
+    origin: 'http://localhost:8081',
     credentials: true, // Permettre les cookies et les en-têtes d'authentification
 };
 app.use(cors(corsOptions));
