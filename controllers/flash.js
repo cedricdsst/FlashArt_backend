@@ -105,15 +105,16 @@ exports.deleteFlash = async (req, res) => {
 };
 
 // Get all flashes with optional tag filtering
+// Get all flashes with optional tag filtering
 exports.getAllFlashes = async (req, res) => {
     try {
         const tags = req.query.tags ? req.query.tags.split(',') : [];
 
         let flashes;
         if (tags.length > 0) {
-            flashes = await Flash.find({ 'tags.name': { $in: tags } });
+            flashes = await Flash.find({ 'tags.name': { $in: tags } }).populate('user_id', 'username lastname firstname');
         } else {
-            flashes = await Flash.find();
+            flashes = await Flash.find().populate('user_id', 'username lastname firstname');
         }
 
         res.status(200).json(flashes);
@@ -127,7 +128,7 @@ exports.getFlashById = async (req, res) => {
     try {
         const flashId = req.params.flashId;
 
-        const flash = await Flash.findById(flashId);
+        const flash = await Flash.findById(flashId).populate('user_id', 'username lastname firstname');
 
         if (!flash) {
             return res.status(404).json({ message: 'Flash not found' });
