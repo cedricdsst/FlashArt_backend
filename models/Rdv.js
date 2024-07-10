@@ -15,15 +15,16 @@ const geometrySchema = new mongoose.Schema({
 const locationSchema = new mongoose.Schema({
   type: {
     type: String,
-    enum: ['Feature'],
+    enum: ['Point'],
     required: true
   },
-  geometry: {
-    type: geometrySchema,
+  coordinates: {
+    type: [Number],
     required: true
   },
   properties: {
-    name: { type: String, required: true }
+    title: { type: String, required: true },
+    adress: { type: String, required: true }
   }
 });
 
@@ -31,10 +32,7 @@ const rdvSchema = mongoose.Schema({
   client_id: { type: mongoose.Schema.Types.ObjectId, required: false, ref: 'User' },
   artist_id: { type: mongoose.Schema.Types.ObjectId, required: true, ref: 'User' },
   date: { type: Date, required: true },
-  location: {
-    type: locationSchema,
-    index: '2dsphere'
-  },
+  location: locationSchema
 });
 
 module.exports = mongoose.model('Rdv', rdvSchema);

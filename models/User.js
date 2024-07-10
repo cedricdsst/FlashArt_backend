@@ -1,12 +1,13 @@
 const mongoose = require('mongoose');
 const uniqueValidator = require('mongoose-unique-validator');
 
-// Define the Flash Schema embedded in User
+// Define the Tag Schema
 const tagSchema = mongoose.Schema({
     id: { type: mongoose.Schema.Types.ObjectId, ref: 'Tag', required: true },
     name: { type: String, required: true }
 });
 
+// Define the Flash Schema
 const flashSchema = mongoose.Schema({
     id: { type: mongoose.Schema.Types.ObjectId, ref: 'Flash', required: true },
     image: { type: String, required: true },
@@ -27,6 +28,10 @@ const userSchema = mongoose.Schema({
         type: mongoose.Schema.Types.ObjectId,
         ref: 'Rdv'
     }],
+    liked_flashes: [{ // Array to store liked flashes
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Flash'
+    }]
 });
 
 userSchema.plugin(uniqueValidator);

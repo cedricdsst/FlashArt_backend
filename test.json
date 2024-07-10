@@ -1,0 +1,85 @@
+[
+    {
+        "_id": "668c5aed1c097b5aa46ffecb",
+        "image": "http://localhost:3000/topicFiles/1449859-shrek-dans-shrek-4-il-etait-une-fin.jpg1720474349782.jpg",
+        "tags": [
+            {
+                "id": "60d0fe4f5311236168a109ca",
+                "name": "Example Tag",
+                "_id": "668c5aed1c097b5aa46ffecc"
+            }
+        ],
+        "available": true,
+        "user_id": {
+            "_id": "668c55181c097b5aa46ffec3",
+            "lastname": "lastT",
+            "firstname": "firstT",
+            "username": "t",
+            "rdv_ids": [
+                {
+                    "_id": "668d38fdc24b8247b54fc7c4",
+                    "artist_id": "668c55181c097b5aa46ffec3",
+                    "date": "2024-09-15T10:00:00.000Z",
+                    "location": {
+                        "type": "Feature",
+                        "geometry": {
+                            "type": "Point",
+                            "coordinates": [
+                                5.3698,
+                                43.2965
+                            ]
+                        },
+                        "properties": {
+                            "name": "marseille"
+                        }
+                    },
+                    "__v": 0,
+                    "client_id": "668d38fdc24b8247b54fc7c8"
+                }
+            ]
+        },
+        "__v": 0
+    },
+    {
+        "_id": "668e5af5e443a924cc19a109",
+        "image": "http://localhost:3000/topicFiles/IMG_0437.JPG1720605429543.jpg",
+        "price": 10,
+        "tags": [
+            {
+                "id": "60d0fe4f5311236168a109ca",
+                "name": "Example Tag",
+                "_id": "668e5af5e443a924cc19a10a"
+            }
+        ],
+        "available": true,
+        "user_id": {
+            "_id": "668c55181c097b5aa46ffec3",
+            "lastname": "lastT",
+            "firstname": "firstT",
+            "username": "t",
+            "rdv_ids": [
+                {
+                    "_id": "668d38fdc24b8247b54fc7c4",
+                    "artist_id": "668c55181c097b5aa46ffec3",
+                    "date": "2024-08-15T10:00:00.000Z",
+                    "location": {
+                        "type": "Feature",
+                        "geometry": {
+                            "type": "Point",
+                            "coordinates": [
+                                2.3522,
+                                48.8566
+                            ]
+                        },
+                        "properties": {
+                            "name": "Paris"
+                        }
+                    },
+                    "__v": 0,
+                    "client_id": "668d38fdc24b8247b54fc7c8"
+                }
+            ]
+        },
+        "__v": 0
+    }
+]

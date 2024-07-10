@@ -88,3 +88,52 @@ exports.deleteUserById = async (req, res) => {
         res.status(500).json({ error: error.message });
     }
 };
+
+exports.addFlashToLiked = async (req, res) => {
+    try {
+        const userId = req.auth.userId; // Get user ID from authenticated user
+        const flashId = req.params.flashId; // Get flash ID from request parameters
+
+        // Find the user and update their liked flashes
+        const user = await User.findById(userId);
+        if (!user) {
+            return res.status(404).json({ message: 'User not found' });
+        }
+
+        // Check if the flash is already liked
+        if (user.liked_flashes.includes(flashId)) {
+            return res.status(400).json({ message: 'Flash already liked' });
+        }
+
+        // Add the flash to the liked_flashes array
+        user.liked_flashes.push(flashId);
+        await user.save();
+
+        res.status(200).json({ message: 'Flash liked successfully', liked_flashes: user.liked_flashes });
+    } catch (error) {
+        console.error(error); // Log the error for debugging
+        res.status(500).json({ error: error.message });
+    }
+};
+
+exports.getLikedFlashes = async (req, res) => {
+    try {
+        const userId = req.auth.userId; // Get user ID from authenticated user
+        console.log('User ID:', userId); // Log the user ID
+
+        // Find the user and populate liked flashes
+        const user = await User.findById(userId)
+            .populate('liked_flashes')
+            .exec();
+
+        if (!user) {
+            console.log('User ID:', userId);
+            return res.status(404).json({ message: 'User not found' });
+        }
+
+        res.status(200).json(user.liked_flashes);
+    } catch (error) {
+        console.error(error); // Log the error for debugging
+        res.status(500).json({ error: error.message });
+    }
+};
