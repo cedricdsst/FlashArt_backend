@@ -49,23 +49,22 @@ exports.login = (req, res, next) => {
                             { expiresIn: '24h' }
                         );
 
-                        // const stayLoggedIn = req.body.stayLoggedIn === true;
+                        const stayLoggedIn = req.body.stayLoggedIn === true;
 
-                        // const cookieOptions = {
-                        //     httpOnly: true,
-                        //     secure: false,
-                        //     sameSite: 'strict'
-                        // };
+                        const cookieOptions = {
+                            httpOnly: true,
+                            secure: false,
+                            sameSite: 'strict'
+                        };
 
-                        // if (stayLoggedIn) {
-                        //     cookieOptions.maxAge = 7 * 24 * 60 * 60 * 1000;
-                        // }
+                        if (stayLoggedIn) {
+                            cookieOptions.maxAge = 7 * 24 * 60 * 60 * 1000;
+                        }
 
-                        // res.cookie('auth_token', token, cookieOptions);
+                        res.cookie('auth_token', token, cookieOptions);
 
                         res.status(200).json({
                             message: "User successfully logged in!",
-                            token: token
                         });
                     }
                 })
