@@ -46,33 +46,26 @@ exports.login = (req, res, next) => {
                               role:  user.role 
                              },
                             'RANDOM_TOKEN_SECRET',
-                            { expiresIn: '24h' } // Adjust as needed
+                            { expiresIn: '24h' }
                         );
 
-                        const stayLoggedIn = req.body.stayLoggedIn === true;
+                        // const stayLoggedIn = req.body.stayLoggedIn === true;
 
-                        const cookieOptions = {
-                            httpOnly: true,
-                            secure: false, // Set to true in production with HTTPS
-                            sameSite: 'strict'
-                        };
+                        // const cookieOptions = {
+                        //     httpOnly: true,
+                        //     secure: false,
+                        //     sameSite: 'strict'
+                        // };
 
-                        if (stayLoggedIn) {
-                            cookieOptions.maxAge = 7 * 24 * 60 * 60 * 1000; // 7 days in milliseconds
-                        }
+                        // if (stayLoggedIn) {
+                        //     cookieOptions.maxAge = 7 * 24 * 60 * 60 * 1000;
+                        // }
 
-                        res.cookie('auth_token', token, cookieOptions);
+                        // res.cookie('auth_token', token, cookieOptions);
 
                         res.status(200).json({
                             message: "User successfully logged in!",
-                            data: {
-                                userId: user._id,
-                                username: user.username,
-                                email: user.email,
-                                lastname: user.lastname,
-                                firstname: user.firstname,
-                                role: user.role
-                            }
+                            token: token
                         });
                     }
                 })
