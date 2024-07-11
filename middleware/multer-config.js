@@ -4,7 +4,8 @@ const MIME_TYPES = {
     'image/jpg': 'jpg',
     'image/jpeg': 'jpg',
     'image/png': 'png',
-    'video/mp4': 'mp4'
+    'video/mp4': 'mp4',
+    'image/webp': 'webp'
 };
 
 const storage = multer.diskStorage({
@@ -19,7 +20,7 @@ const storage = multer.diskStorage({
 });
 
 const fileFilter = (req, file, callback) => {
-    if (['image/jpg', 'image/jpeg', 'image/png', 'video/mp4'].includes(file.mimetype)) {
+    if (['image/jpg', 'image/jpeg', 'image/png', 'video/mp4', 'image/webp'].includes(file.mimetype)) {
         callback(null, true); // Accept file
     } else {
         callback(null, false); // Reject file

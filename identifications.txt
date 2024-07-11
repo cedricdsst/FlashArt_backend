@@ -1,0 +1,27 @@
+{
+    "username":"johnSnow69",
+    "email":"artist1@flashart.fr",
+    "password":"artist",
+    "firstname":"john",
+    "lastname":"snow",
+    "role":"artist"
+}
+
+
+{
+    "username":"emma_tatoo",
+    "email":"artist2@flashart.fr",
+    "password":"artist",
+    "firstname":"emma",
+    "lastname":"smith",
+    "role":"client"
+}
+
+{
+    "username":"cedricdsst",
+    "email":"cedricdsst@gmail.com",
+    "password":"client",
+    "firstname":"cedric",
+    "lastname":"dousset",
+    "role":"client"
+}

@@ -21,7 +21,7 @@ const userSchema = mongoose.Schema({
     lastname: { type: String, required: true, unique: false },
     firstname: { type: String, required: true, unique: false },
     username: { type: String, required: true, unique: true },
-    role: { type: String, required: true, unique: true },
+    role: { type: String, required: true },
     password: { type: String, required: true },
     flash: flashSchema, // Embed the flash schema here
     rdv_ids: [{
