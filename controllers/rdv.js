@@ -17,7 +17,7 @@ exports.createRdv = async (req, res) => {
                 coordinates: location.coordinates,
             },
             properties: {
-                title: properties.title || '', 
+                title: properties.title || '',
                 address: properties.address
             }
         });
@@ -91,13 +91,15 @@ exports.getRdvById = async (req, res) => {
 };
 
 // Get all RDVs
+// Controller to get all RDVs for an artist
 exports.getAllRdvs = async (req, res) => {
     try {
         const userId = req.auth.userId; // Get the authenticated user ID from the auth middleware
 
         const rdvs = await Rdv.find({ artist_id: userId }) // Filter RDVs by artist_id matching the user ID
             .populate('client_id', 'username') // Adjust the fields as needed based on your User model
-            .populate('artist_id', 'username'); // Adjust the fields as needed based on your User model
+            .populate('artist_id', 'username') // Adjust the fields as needed based on your User model
+            .populate('flash_id'); // Populate the flash_id field with full flash data
 
         res.status(200).json(rdvs);
     } catch (error) {
@@ -105,19 +107,22 @@ exports.getAllRdvs = async (req, res) => {
     }
 };
 
+// Controller to get all RDVs for a client
 exports.getAllRdvsForClient = async (req, res) => {
     try {
         const userId = req.auth.userId; // Get the authenticated user ID from the auth middleware
 
         const rdvs = await Rdv.find({ client_id: userId }) // Filter RDVs by client_id matching the user ID
             .populate('client_id', 'username') // Adjust the fields as needed based on your User model
-            .populate('artist_id', 'username'); // Adjust the fields as needed based on your User model
+            .populate('artist_id', 'username') // Adjust the fields as needed based on your User model
+            .populate('flash_id'); // Populate the flash_id field with full flash data
 
         res.status(200).json(rdvs);
     } catch (error) {
         res.status(500).json({ error: error.message });
     }
 };
+
 
 
 // Partially update an existing RDV
