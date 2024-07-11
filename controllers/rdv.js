@@ -5,8 +5,9 @@ const User = require('../models/User');
 // Create an RDV
 exports.createRdv = async (req, res) => {
     try {
-        const artist_id = req.auth.userId; // Get artist ID from authenticated user
-        const { date, coordinates, title, adress } = req.body;
+        const artist_id = req.auth.userId;
+        const { date, location } = req.body;
+
         const rdv = new Rdv({
             artist_id,
             date,
@@ -14,11 +15,11 @@ exports.createRdv = async (req, res) => {
                 type: 'Feature',
                 geometry: {
                     type: 'Point',
-                    coordinates
+                    coordinates: location.geometry.coordinates
                 },
                 properties: {
-                    title,
-                    adress
+                    title: location.properties.title || '', 
+                    address: location.properties.address
                 }
             }
         });
