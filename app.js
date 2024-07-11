@@ -36,24 +36,18 @@ app.use(cors(corsOptions));
 app.use('/topicFiles', express.static(path.join(__dirname, 'topicFiles')));
 
 // Routes
-const topicRoutes = require('./routes/topic');
-const chatRoutes = require('./routes/chat');
+
 const authRoutes = require('./routes/auth');
 const userRoutes = require('./routes/user');
-const vinRoutes = require('./routes/vin');
-const ecoleRoutes = require('./routes/ecole');
-const atelierRoutes = require('./routes/atelier');
+
 const flashRoutes = require('./routes/flash');
 const rdvRoutes = require('./routes/rdv');
 const tagRoutes = require('./routes/tag');
 
-app.use('/api/topic', topicRoutes);
-app.use('/api/chat', chatRoutes);
+
 app.use('/api/auth', authRoutes);
 app.use('/api/user', userRoutes);
-app.use('/api/vin', vinRoutes);
-app.use('/api/ecole', ecoleRoutes);
-app.use('/api/atelier', atelierRoutes);
+
 app.use('/api/flash', flashRoutes);
 app.use('/api/rdv', rdvRoutes);
 app.use('/api/tag', tagRoutes);

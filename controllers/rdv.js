@@ -33,6 +33,7 @@ exports.createRdv = async (req, res) => {
 
         res.status(201).json({ message: 'RDV created successfully', rdv });
     } catch (error) {
+        console.error(error); // Log the error for debugging
         res.status(500).json({ error: error.message });
     }
 };
@@ -83,7 +84,7 @@ exports.updateRdvById = async (req, res) => {
         if (!existingRdv) {
             return res.status(404).json({ message: 'RDV not found' });
         }
-        
+
         const previousClientId = existingRdv.client_id;
 
         // Convert client_id to ObjectId if it exists in the update data
@@ -158,8 +159,10 @@ exports.deleteRdvById = async (req, res) => {
 
         // Remove the RDV ID from the artist's rdv_ids array
         const user = await User.findById(rdv.artist_id);
-        user.rdv_ids = user.rdv_ids.filter(rdvId => !rdvId.equals(rdv._id));
-        await user.save();
+        if (user) {
+            user.rdv_ids = user.rdv_ids.filter(rdvId => !rdvId.equals(rdv._id));
+            await user.save();
+        }
 
         // Optionally, remove the RDV ID from the client's rdv_ids array if client_id is present
         if (rdv.client_id) {
@@ -172,7 +175,7 @@ exports.deleteRdvById = async (req, res) => {
 
         res.status(200).json({ message: 'RDV deleted successfully' });
     } catch (error) {
-        res.status(500).json({ error: error.message });
+        console.error(error); // Log the error for debugging
+        res.status(500).json({ error: error.message || 'An unknown error occurred' });
     }
 };
-

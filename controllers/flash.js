@@ -1,5 +1,6 @@
 const Flash = require('../models/Flash');
 const User = require('../models/User');
+const { haversineDistance } = require('../services/distanceService');
 
 // Create a new flash and associate it with a user
 exports.createFlash = async (req, res) => {
@@ -89,18 +90,19 @@ exports.deleteFlash = async (req, res) => {
         }
 
         // Delete the flash
-        await flash.remove();
+        await Flash.deleteOne({ _id: flashId });
 
         // Find the user and remove the embedded flash field
         const user = await User.findById(user_id);
-        if (user.flash.id.toString() === flashId) {
+        if (user.flash && user.flash.id.toString() === flashId) {
             user.flash = null;
             await user.save();
         }
 
         res.status(200).json({ message: 'Flash deleted successfully' });
     } catch (error) {
-        res.status(500).json({ error });
+        console.error(error); // Log the error for debugging
+        res.status(500).json({ error: error.message || 'An unknown error occurred' });
     }
 };
 
@@ -109,26 +111,74 @@ exports.deleteFlash = async (req, res) => {
 exports.getAllFlashes = async (req, res) => {
     try {
         const tags = req.query.tags ? req.query.tags.split(',') : [];
+        const days = req.query.days ? parseInt(req.query.days, 10) : null;
+        const location = req.query.location ? req.query.location.split(',').map(Number) : null;
+        const km = req.query.km ? parseFloat(req.query.km) : null;
+
+        console.log('Query Parameters:', { tags, days, location, km });
 
         let flashes;
         if (tags.length > 0) {
-            flashes = await Flash.find({ 'tags.name': { $in: tags } }).populate('user_id', 'username lastname firstname');
+            flashes = await Flash.find({ 'tags.name': { $in: tags } })
+                .populate({
+                    path: 'user_id',
+                    select: 'username lastname firstname',
+                    populate: {
+                        path: 'rdv_ids',
+                        model: 'Rdv'
+                    }
+                });
         } else {
-            flashes = await Flash.find().populate('user_id', 'username lastname firstname');
+            flashes = await Flash.find()
+                .populate({
+                    path: 'user_id',
+                    select: 'username lastname firstname',
+                    populate: {
+                        path: 'rdv_ids',
+                        model: 'Rdv'
+                    }
+                });
+        }
+
+        console.log('Found Flashes:', flashes);
+
+        const now = new Date();
+
+        if (days !== null || location !== null) {
+            flashes = flashes.filter(flash => {
+                return flash.user_id.rdv_ids.some(rdv => {
+                    const rdvDate = new Date(rdv.date);
+                    const dateCondition = !days || (rdvDate >= now && rdvDate <= new Date(now.getTime() + days * 24 * 60 * 60 * 1000));
+
+                    const locationCondition = location && rdv.location && rdv.location.coordinates
+                        ? haversineDistance(location, rdv.location.coordinates) <= km
+                        : true;
+
+                    return dateCondition && locationCondition;
+                });
+            });
         }
 
         res.status(200).json(flashes);
     } catch (error) {
-        res.status(500).json({ error });
+        console.error(error); // Log the error for debugging
+        res.status(500).json({ error: error.message });
     }
 };
-
 // Get a single flash by ID
 exports.getFlashById = async (req, res) => {
     try {
         const flashId = req.params.flashId;
 
-        const flash = await Flash.findById(flashId).populate('user_id', 'username lastname firstname');
+        const flash = await Flash.findById(flashId)
+            .populate({
+                path: 'user_id',
+                select: 'username lastname firstname',
+                populate: {
+                    path: 'rdv_ids',
+                    model: 'Rdv'
+                }
+            });
 
         if (!flash) {
             return res.status(404).json({ message: 'Flash not found' });
