@@ -1,6 +1,7 @@
 const mongoose = require('mongoose');
 const Rdv = require('../models/Rdv');
 const User = require('../models/User');
+const Flash = require('../models/Flash');
 
 // Create an RDV
 exports.createRdv = async (req, res) => {
@@ -38,6 +39,43 @@ exports.createRdv = async (req, res) => {
     }
 };
 
+// Book an RDV
+exports.bookRdv = async (req, res) => {
+    try {
+        const client_id = req.auth.userId; // Get client ID from authenticated user
+        const { rdvId, flashId } = req.body; // Get RDV and flash ID from request body
+
+        // Find the RDV
+        const rdv = await Rdv.findById(rdvId);
+        if (!rdv) {
+            return res.status(404).json({ message: 'RDV not found' });
+        }
+
+        // Update RDV with client_id, flash_id and booked status
+        rdv.client_id = client_id;
+        rdv.flash_id = flashId;
+        rdv.booked = true;
+        await rdv.save();
+
+        // Update the flash to set available to false
+        const flash = await Flash.findById(flashId);
+        if (flash) {
+            flash.available = false;
+            await flash.save();
+        }
+
+        // Add the RDV ID to the client's rdv_ids array
+        const user = await User.findById(client_id);
+        user.rdv_ids.push(rdv._id);
+        await user.save();
+
+        res.status(200).json({ message: 'RDV booked successfully', rdv });
+    } catch (error) {
+        console.error(error); // Log the error for debugging
+        res.status(500).json({ error: error.message });
+    }
+};
+
 // Get an RDV by ID
 exports.getRdvById = async (req, res) => {
     try {
@@ -68,8 +106,6 @@ exports.getAllRdvs = async (req, res) => {
     }
 };
 
-
-
 // Partially update an existing RDV
 exports.updateRdvById = async (req, res) => {
     try {
@@ -93,7 +129,7 @@ exports.updateRdvById = async (req, res) => {
         }
 
         // If coordinates are provided, format them correctly
-        if (updateData.coordinates && updateData.title && updateData.adress) {
+        if (updateData.coordinates && updateData.title && updateData.address) {
             updateData.location = {
                 type: 'Feature',
                 geometry: {
@@ -102,12 +138,12 @@ exports.updateRdvById = async (req, res) => {
                 },
                 properties: {
                     title: updateData.title,
-                    adress: updateData.adress
+                    address: updateData.address
                 }
             };
             delete updateData.coordinates; // Remove coordinates from the update data to avoid duplication
             delete updateData.title;
-            delete updateData.adress;
+            delete updateData.address;
         }
 
         const rdv = await Rdv.findByIdAndUpdate(req.params.id, updateData, { new: true });
@@ -137,8 +173,6 @@ exports.updateRdvById = async (req, res) => {
     }
 };
 
-
-// Delete an RDV by ID
 // Delete an RDV by ID
 exports.deleteRdvById = async (req, res) => {
     try {

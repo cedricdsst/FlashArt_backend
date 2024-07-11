@@ -4,6 +4,7 @@ const rdvController = require('../controllers/rdv');
 const auth = require('../middleware/auth'); // Assuming you have an auth middleware
 
 router.post('/', auth, rdvController.createRdv);
+router.post('/book', auth, rdvController.bookRdv);
 router.get('/:id', auth, rdvController.getRdvById);
 router.get('/', auth, rdvController.getAllRdvs);
 router.patch('/:id', auth, rdvController.updateRdvById);

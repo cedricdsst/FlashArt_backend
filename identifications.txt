@@ -14,7 +14,7 @@
     "password":"artist",
     "firstname":"emma",
     "lastname":"smith",
-    "role":"client"
+    "role":"artist"
 }
 
 {
