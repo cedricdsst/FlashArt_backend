@@ -93,8 +93,10 @@ exports.getRdvById = async (req, res) => {
 // Get all RDVs
 exports.getAllRdvs = async (req, res) => {
     try {
-        const rdvs = await Rdv.find()
-            .populate('client_id', 'name') // Adjust the fields as needed based on your User model
+        const userId = req.auth.userId; // Get the authenticated user ID from the auth middleware
+
+        const rdvs = await Rdv.find({ artist_id: userId }) // Filter RDVs by artist_id matching the user ID
+            .populate('client_id', 'username') // Adjust the fields as needed based on your User model
             .populate('artist_id', 'username'); // Adjust the fields as needed based on your User model
 
         res.status(200).json(rdvs);
@@ -102,6 +104,21 @@ exports.getAllRdvs = async (req, res) => {
         res.status(500).json({ error: error.message });
     }
 };
+
+exports.getAllRdvsForClient = async (req, res) => {
+    try {
+        const userId = req.auth.userId; // Get the authenticated user ID from the auth middleware
+
+        const rdvs = await Rdv.find({ client_id: userId }) // Filter RDVs by client_id matching the user ID
+            .populate('client_id', 'username') // Adjust the fields as needed based on your User model
+            .populate('artist_id', 'username'); // Adjust the fields as needed based on your User model
+
+        res.status(200).json(rdvs);
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
+};
+
 
 // Partially update an existing RDV
 exports.updateRdvById = async (req, res) => {
