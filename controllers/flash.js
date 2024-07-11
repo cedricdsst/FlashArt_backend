@@ -119,7 +119,7 @@ exports.getAllFlashes = async (req, res) => {
 
         let flashes;
         if (tags.length > 0) {
-            flashes = await Flash.find({ 'tags.name': { $in: tags } })
+            flashes = await Flash.find({ tags: { $elemMatch: { name: { $in: tags } } } })
                 .populate({
                     path: 'user_id',
                     select: 'username lastname firstname',
