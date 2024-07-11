@@ -8,7 +8,7 @@ const flashController = require('../controllers/flash');
 router.post('/', auth, multer, flashController.createFlash);
 
 // Route to update a flash
-router.patch('/:flashId', auth, multer, flashController.updateFlash);
+router.patch('/:flashId', multer, flashController.updateFlash);
 
 // Route to delete a flash
 router.delete('/:flashId', auth, flashController.deleteFlash);

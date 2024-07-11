@@ -10,7 +10,7 @@ router.get('/like', auth, userController.getLikedFlashes);
 router.post('/like/:flashId', auth, userController.addFlashToLiked);
 
 // Get one user by username
-router.get('/:username', auth, userController.getOneUser);
+router.get('/:username', userController.getOneUser);
 
 // Get all users
 router.get('/', auth, userController.getAllUsers);

@@ -19,7 +19,7 @@ const rdvSchema = mongoose.Schema({
     title: { type: String, required: true },
     address: { type: String, required: true }
   },
-  flash_id: { type: mongoose.Schema.Types.ObjectId, ref: 'Flash', required: false }, 
+  flash_id: { type: mongoose.Schema.Types.ObjectId, ref: 'Flash', required: false },
   booked: { type: Boolean, default: false }
 });
 

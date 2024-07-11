@@ -19,6 +19,7 @@ exports.createRdv = async (req, res) => {
             properties: {
                 title: properties.title || '',
                 address: properties.address
+
             }
         });
 

@@ -9,27 +9,36 @@ exports.createFlash = async (req, res) => {
         const image = req.file ? `${req.protocol}://${req.get('host')}/topicFiles/${req.file.filename}` : null;
         const flashObject = JSON.parse(req.body.flash);
 
+        console.log('Creating flash with the following data:', flashObject);
+
         // Create a new flash (available will be true by default)
         const flash = new Flash({ ...flashObject, image, user_id });
         await flash.save();
+        console.log('Flash saved:', flash);
 
         // Find the user and update their flash field
         const user = await User.findById(user_id);
-        user.flash = {
+        if (!user) {
+            return res.status(404).json({ message: 'User not found' });
+        }
+
+        user.flash.push({
             id: flash._id,
             image: flash.image,
             price: flash.price,
             tags: flash.tags,
             available: flash.available // This will be true by default as per the schema
-        };
+        });
+
         await user.save();
+        console.log('User updated with new flash:', user);
 
         res.status(201).json({ message: 'Flash created successfully', flash });
     } catch (error) {
-        res.status(500).json({ error });
+        console.error('Error creating flash:', error);
+        res.status(500).json({ error: error.message });
     }
 };
-
 // Partially update an existing flash
 exports.updateFlash = async (req, res) => {
     try {

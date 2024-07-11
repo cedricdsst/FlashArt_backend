@@ -23,7 +23,7 @@ const userSchema = mongoose.Schema({
     username: { type: String, required: true, unique: true },
     role: { type: String, required: true },
     password: { type: String, required: true },
-    flash: flashSchema, // Embed the flash schema here
+    flash: [flashSchema], // Change this to an array of flashes
     rdv_ids: [{
         type: mongoose.Schema.Types.ObjectId,
         ref: 'Rdv'
