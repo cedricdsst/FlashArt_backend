@@ -7,21 +7,18 @@ const Flash = require('../models/Flash');
 exports.createRdv = async (req, res) => {
     try {
         const artist_id = req.auth.userId;
-        const { date, location } = req.body;
+        const { date, location, properties } = req.body;
 
         const rdv = new Rdv({
             artist_id,
             date,
             location: {
-                type: 'Feature',
-                geometry: {
-                    type: 'Point',
-                    coordinates: location.geometry.coordinates
-                },
-                properties: {
-                    title: location.properties.title || '', 
-                    address: location.properties.address
-                }
+                type: 'Point',
+                coordinates: location.coordinates,
+            },
+            properties: {
+                title: properties.title || '', 
+                address: properties.address
             }
         });
 
