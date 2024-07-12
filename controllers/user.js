@@ -10,7 +10,7 @@ exports.getOneUser = async (req, res, next) => {
                 path: 'rdv_ids',
                 populate: {
                     path: 'client_id artist_id',
-                    select: 'name' // Adjust as per your User model
+                    select: 'name'
                 }
             })
             .exec();
@@ -43,7 +43,7 @@ exports.getAllUsers = async (req, res) => {
                 path: 'rdv_ids',
                 populate: {
                     path: 'client_id artist_id',
-                    select: 'name' // Adjust as per your User model
+                    select: 'name'
                 }
             })
             .exec();
@@ -80,7 +80,7 @@ exports.deleteUserById = async (req, res) => {
             return res.status(404).json({ message: 'User not found' });
         }
 
-        // Optionally, you can remove the RDVs associated with the user
+
         await Rdv.deleteMany({ artist_id: user._id });
 
         res.status(200).json({ message: 'User deleted successfully' });
@@ -91,8 +91,8 @@ exports.deleteUserById = async (req, res) => {
 
 exports.addFlashToLiked = async (req, res) => {
     try {
-        const userId = req.auth.userId; // Get user ID from authenticated user
-        const flashId = req.params.flashId; // Get flash ID from request parameters
+        const userId = req.auth.userId;
+        const flashId = req.params.flashId;
 
         // Find the user and update their liked flashes
         const user = await User.findById(userId);
@@ -111,15 +111,15 @@ exports.addFlashToLiked = async (req, res) => {
 
         res.status(200).json({ message: 'Flash liked successfully', liked_flashes: user.liked_flashes });
     } catch (error) {
-        console.error(error); // Log the error for debugging
+        console.error(error);
         res.status(500).json({ error: error.message });
     }
 };
 
 exports.getLikedFlashes = async (req, res) => {
     try {
-        const userId = req.auth.userId; // Get user ID from authenticated user
-        console.log('User ID:', userId); // Log the user ID
+        const userId = req.auth.userId;
+        console.log('User ID:', userId);
 
         // Find the user and populate liked flashes
         const user = await User.findById(userId)
@@ -133,7 +133,7 @@ exports.getLikedFlashes = async (req, res) => {
 
         res.status(200).json(user.liked_flashes);
     } catch (error) {
-        console.error(error); // Log the error for debugging
+        console.error(error);
         res.status(500).json({ error: error.message });
     }
 };

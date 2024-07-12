@@ -1,13 +1,13 @@
 const mongoose = require('mongoose');
 const uniqueValidator = require('mongoose-unique-validator');
 
-// Define the Tag Schema
+
 const tagSchema = mongoose.Schema({
     id: { type: mongoose.Schema.Types.ObjectId, ref: 'Tag', required: true },
     name: { type: String, required: true }
 });
 
-// Define the Flash Schema
+
 const flashSchema = mongoose.Schema({
     id: { type: mongoose.Schema.Types.ObjectId, ref: 'Flash', required: true },
     image: { type: String, required: true },
@@ -15,7 +15,7 @@ const flashSchema = mongoose.Schema({
     available: { type: Boolean, required: true, default: true }
 });
 
-// Define the User Schema
+
 const userSchema = mongoose.Schema({
     email: { type: String, required: true, unique: true },
     lastname: { type: String, required: true, unique: false },
@@ -23,12 +23,12 @@ const userSchema = mongoose.Schema({
     username: { type: String, required: true, unique: true },
     role: { type: String, required: true },
     password: { type: String, required: true },
-    flash: [flashSchema], // Change this to an array of flashes
+    flash: [flashSchema],
     rdv_ids: [{
         type: mongoose.Schema.Types.ObjectId,
         ref: 'Rdv'
     }],
-    liked_flashes: [{ // Array to store liked flashes
+    liked_flashes: [{
         type: mongoose.Schema.Types.ObjectId,
         ref: 'Flash'
     }]

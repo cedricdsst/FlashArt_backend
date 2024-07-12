@@ -1,12 +1,12 @@
 const mongoose = require('mongoose');
 
-// Define the Tag Schema
+
 const tagSchema = mongoose.Schema({
     id: { type: mongoose.Schema.Types.ObjectId, ref: 'Tag', required: true },
     name: { type: String, required: true }
 });
 
-// Define the Flash Schema
+
 const flashSchema = mongoose.Schema({
     image: { type: String, required: true },
     price: { type: Number, required: true },

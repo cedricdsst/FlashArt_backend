@@ -42,9 +42,10 @@ exports.login = (req, res, next) => {
                         return res.status(401).json({ message: 'Incorrect username/password' });
                     } else {
                         const token = jwt.sign(
-                            { userId: user._id,
-                              role:  user.role 
-                             },
+                            {
+                                userId: user._id,
+                                role: user.role
+                            },
                             'RANDOM_TOKEN_SECRET',
                             { expiresIn: '24h' }
                         );
@@ -115,8 +116,8 @@ exports.verifyToken = (req, res) => {
 exports.logout = (req, res) => {
     res.cookie('auth_token', '', {
         httpOnly: true,
-        secure: false, // Adjust this as per your environment (use true in production with HTTPS)
+        secure: false,
         sameSite: 'strict',
-        expires: new Date(0) // Set the cookie to expire immediately
+        expires: new Date(0)
     }).status(200).json({ message: 'User successfully logged out' });
 };

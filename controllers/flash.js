@@ -11,12 +11,12 @@ exports.createFlash = async (req, res) => {
 
         console.log('Creating flash with the following data:', flashObject);
 
-        // Create a new flash (available will be true by default)
+
         const flash = new Flash({ ...flashObject, image, user_id });
         await flash.save();
         console.log('Flash saved:', flash);
 
-        // Find the user and update their flash field
+
         const user = await User.findById(user_id);
         if (!user) {
             return res.status(404).json({ message: 'User not found' });
@@ -27,7 +27,7 @@ exports.createFlash = async (req, res) => {
             image: flash.image,
             price: flash.price,
             tags: flash.tags,
-            available: flash.available // This will be true by default as per the schema
+            available: flash.available
         });
 
         await user.save();
@@ -39,7 +39,7 @@ exports.createFlash = async (req, res) => {
         res.status(500).json({ error: error.message });
     }
 };
-// Partially update an existing flash
+
 exports.updateFlash = async (req, res) => {
     try {
         const user_id = req.auth.userId;
@@ -51,7 +51,7 @@ exports.updateFlash = async (req, res) => {
             updateData.image = `${req.protocol}://${req.get('host')}/topicFiles/${req.file.filename}`;
         }
 
-        // Find the flash and check if the user is authorized
+
         const flash = await Flash.findById(flashId);
         if (!flash) {
             return res.status(404).json({ message: 'Flash not found' });
@@ -110,12 +110,12 @@ exports.deleteFlash = async (req, res) => {
 
         res.status(200).json({ message: 'Flash deleted successfully' });
     } catch (error) {
-        console.error(error); // Log the error for debugging
+        console.error(error);
         res.status(500).json({ error: error.message || 'An unknown error occurred' });
     }
 };
 
-// Get all flashes with optional tag filtering
+
 // Get all flashes with optional tag filtering
 exports.getAllFlashes = async (req, res) => {
     try {
@@ -170,7 +170,7 @@ exports.getAllFlashes = async (req, res) => {
 
         res.status(200).json(flashes);
     } catch (error) {
-        console.error(error); // Log the error for debugging
+        console.error(error);
         res.status(500).json({ error: error.message });
     }
 };

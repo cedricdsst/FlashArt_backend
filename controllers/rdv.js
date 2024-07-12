@@ -32,7 +32,7 @@ exports.createRdv = async (req, res) => {
 
         res.status(201).json({ message: 'RDV created successfully', rdv });
     } catch (error) {
-        console.error(error); // Log the error for debugging
+        console.error(error);
         res.status(500).json({ error: error.message });
     }
 };
@@ -40,8 +40,8 @@ exports.createRdv = async (req, res) => {
 // Book an RDV
 exports.bookRdv = async (req, res) => {
     try {
-        const client_id = req.auth.userId; // Get client ID from authenticated user
-        const { rdvId, flashId } = req.body; // Get RDV and flash ID from request body
+        const client_id = req.auth.userId;
+        const { rdvId, flashId } = req.body;
 
         // Find the RDV
         const rdv = await Rdv.findById(rdvId);
@@ -69,7 +69,7 @@ exports.bookRdv = async (req, res) => {
 
         res.status(200).json({ message: 'RDV booked successfully', rdv });
     } catch (error) {
-        console.error(error); // Log the error for debugging
+        console.error(error);
         res.status(500).json({ error: error.message });
     }
 };
@@ -78,8 +78,8 @@ exports.bookRdv = async (req, res) => {
 exports.getRdvById = async (req, res) => {
     try {
         const rdv = await Rdv.findById(req.params.id)
-            .populate('client_id', 'name') // Adjust the fields as needed based on your User model
-            .populate('artist_id', 'username'); // Adjust the fields as needed based on your User model
+            .populate('client_id', 'name')
+            .populate('artist_id', 'username');
 
         if (!rdv) {
             return res.status(404).json({ message: 'RDV not found' });
@@ -92,15 +92,15 @@ exports.getRdvById = async (req, res) => {
 };
 
 // Get all RDVs
-// Controller to get all RDVs for an artist
+
 exports.getAllRdvs = async (req, res) => {
     try {
-        const userId = req.auth.userId; // Get the authenticated user ID from the auth middleware
+        const userId = req.auth.userId;
 
-        const rdvs = await Rdv.find({ artist_id: userId }) // Filter RDVs by artist_id matching the user ID
-            .populate('client_id', 'username') // Adjust the fields as needed based on your User model
-            .populate('artist_id', 'username') // Adjust the fields as needed based on your User model
-            .populate('flash_id'); // Populate the flash_id field with full flash data
+        const rdvs = await Rdv.find({ artist_id: userId })
+            .populate('client_id', 'username')
+            .populate('artist_id', 'username')
+            .populate('flash_id');
 
         res.status(200).json(rdvs);
     } catch (error) {
@@ -108,15 +108,15 @@ exports.getAllRdvs = async (req, res) => {
     }
 };
 
-// Controller to get all RDVs for a client
+
 exports.getAllRdvsForClient = async (req, res) => {
     try {
-        const userId = req.auth.userId; // Get the authenticated user ID from the auth middleware
+        const userId = req.auth.userId;
 
-        const rdvs = await Rdv.find({ client_id: userId }) // Filter RDVs by client_id matching the user ID
-            .populate('client_id', 'username') // Adjust the fields as needed based on your User model
-            .populate('artist_id', 'username') // Adjust the fields as needed based on your User model
-            .populate('flash_id'); // Populate the flash_id field with full flash data
+        const rdvs = await Rdv.find({ client_id: userId })
+            .populate('client_id', 'username')
+            .populate('artist_id', 'username')
+            .populate('flash_id');
 
         res.status(200).json(rdvs);
     } catch (error) {
@@ -126,16 +126,16 @@ exports.getAllRdvsForClient = async (req, res) => {
 
 
 
-// Partially update an existing RDV
+
 exports.updateRdvById = async (req, res) => {
     try {
-        const artist_id = req.auth.userId; // Get artist ID from authenticated user
+        const artist_id = req.auth.userId;
         const updateData = req.body;
 
-        // Ensure artist_id from the authenticated user is included in the update data
+
         updateData.artist_id = artist_id;
 
-        // Fetch the existing RDV to get the current client_id
+
         const existingRdv = await Rdv.findById(req.params.id);
         if (!existingRdv) {
             return res.status(404).json({ message: 'RDV not found' });
@@ -143,12 +143,12 @@ exports.updateRdvById = async (req, res) => {
 
         const previousClientId = existingRdv.client_id;
 
-        // Convert client_id to ObjectId if it exists in the update data
+
         if (updateData.client_id) {
             updateData.client_id = new mongoose.Types.ObjectId(updateData.client_id);
         }
 
-        // If coordinates are provided, format them correctly
+
         if (updateData.coordinates && updateData.title && updateData.address) {
             updateData.location = {
                 type: 'Feature',
@@ -161,7 +161,7 @@ exports.updateRdvById = async (req, res) => {
                     address: updateData.address
                 }
             };
-            delete updateData.coordinates; // Remove coordinates from the update data to avoid duplication
+            delete updateData.coordinates;
             delete updateData.title;
             delete updateData.address;
         }
@@ -196,7 +196,7 @@ exports.updateRdvById = async (req, res) => {
 // Delete an RDV by ID
 exports.deleteRdvById = async (req, res) => {
     try {
-        const userId = req.auth.userId; // Get user ID from authenticated user
+        const userId = req.auth.userId;
         const rdv = await Rdv.findById(req.params.id);
 
         if (!rdv) {
@@ -229,7 +229,7 @@ exports.deleteRdvById = async (req, res) => {
 
         res.status(200).json({ message: 'RDV deleted successfully' });
     } catch (error) {
-        console.error(error); // Log the error for debugging
+        console.error(error);
         res.status(500).json({ error: error.message || 'An unknown error occurred' });
     }
 };
